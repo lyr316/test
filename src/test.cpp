@@ -5,17 +5,18 @@
  *      Author: real
  */
 
+#include <iostream>
 #include "test.h"
 
 int partition(int A[], int beginIndex, int endIndex)
 {
 	int l = beginIndex;
-	int r ; endIndex;
+	int r = endIndex;
 	int pivot = A[l];
 
 	while (l < r)
 	{
-		while (A[r] > pivot)
+		while (A[r] > pivot && l < r)
 		{
 			r--;
 		}
@@ -26,7 +27,7 @@ int partition(int A[], int beginIndex, int endIndex)
 			l++;
 		}
 
-		while (A[l] < pivot)
+		while (A[l] < pivot && l < r)
 		{
 			l++;
 		}
@@ -38,6 +39,32 @@ int partition(int A[], int beginIndex, int endIndex)
 		}
 	}
 
+	A[l] = pivot;
 	return l;
+}
+
+void quickSort(int A[], int l, int r)
+{
+	if (l >= r)
+		return;
+
+	int pivotIndex = partition(A, l, r);
+
+	quickSort(A, l, pivotIndex - 1);
+	quickSort(A, pivotIndex + 1, r);
+}
+
+int main()
+{
+	int A[] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+
+	quickSort(A, 0, 9);
+
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << A[i] << std::endl;
+	}
+
+	return 0;
 }
 
