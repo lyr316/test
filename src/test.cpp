@@ -6,41 +6,27 @@
  */
 
 #include <iostream>
+#include <vector>
 #include "test.h"
 
-int partition(int A[], int beginIndex, int endIndex)
+int partition(int A[], int start, int end, int pivotIndex)
 {
-	int l = beginIndex;
-	int r = endIndex;
-	int pivot = A[l];
+	std::swap(A[pivotIndex], A[end]);
 
-	while (l < r)
+	int newPivotIndex = start;
+
+	for (int i = start; i < end; i++)
 	{
-		while (A[r] > pivot && l < r)
+		if (A[i] < A[end])
 		{
-			r--;
-		}
-
-		if (l < r)
-		{
-			A[l] = A[r];
-			l++;
-		}
-
-		while (A[l] < pivot && l < r)
-		{
-			l++;
-		}
-
-		if (l < r)
-		{
-			A[r] = A[l];
-			r--;
+			std::swap(A[i], A[newPivotIndex]);
+			newPivotIndex++;
 		}
 	}
 
-	A[l] = pivot;
-	return l;
+	std::swap(A[end], A[newPivotIndex]);
+
+	return newPivotIndex;
 }
 
 void quickSort(int A[], int l, int r)
@@ -48,23 +34,207 @@ void quickSort(int A[], int l, int r)
 	if (l >= r)
 		return;
 
-	int pivotIndex = partition(A, l, r);
+	int pivotIndex = partition(A, l, r, l);
 
 	quickSort(A, l, pivotIndex - 1);
 	quickSort(A, pivotIndex + 1, r);
 }
 
+int quickSelect(int A[], int l, int r, int k)
+{
+	int pivotIndex = partition(A, l, r, l);
+
+	if (pivotIndex <= k - 1)
+	{
+		return quickSelect(A, pivotIndex + 1, r, k);
+	}
+
+	if (pivotIndex >= k + 1)
+	{
+		return quickSelect(A, l, pivotIndex - 1, l);
+	}
+
+	else
+		return A[pivotIndex];
+}
+
+int binarySearchRecursive(int A[], int start, int end, int target)
+{
+	if (start == end && A[start] != target)
+		return -1;
+
+	int mid = start + (end - start)/2;
+
+	if (A[mid] < target)
+		return binarySearchRecursive(A, mid + 1, end, target);
+
+	else if (A[mid] > target)
+		return binarySearchRecursive(A, start, mid - 1, target);
+
+	else
+		return mid;
+}
+
+int binarySearchIterative(int A[], int l, int r, int target)
+{
+	if (l > r)
+		return -1;
+
+	int start = l;
+	int end = r;
+
+	while(start <= end)
+	{
+		int mid = start + (end - start)/2;
+
+		if (A[mid] < target)
+		{
+			start = mid + 1;
+		}
+
+		else if (A[mid] > target)
+		{
+			end = mid - 1;
+		}
+
+		else
+			return mid;
+	}
+
+	return -1;
+}
+
+int binarySearchLast(int A[], int start, int end, int target)
+{
+	if (start > end)
+		return -1;
+
+	int mid = start + (end - start)/2;
+
+	if (A[mid] < target)
+		return binarySearchLast(A, mid + 1, end, target);
+
+	else if (A[mid] > target)
+		return binarySearchLast(A, start, mid - 1, target);
+
+	else
+	{
+		int lastTarget = binarySearchLast(A, mid + 1, end, target);
+		if (lastTarget == -1)
+			return mid;
+		else
+			return lastTarget;
+	}
+}
+
+class ListNode {
+public:
+      int val;
+      ListNode next;
+      ListNode(int x) {
+          val = x;
+          next = NULL;
+      }
+  }
+
+ListNode* searchVal(ListNode* head, int target)
+{
+	ListNode* current = head;
+	while(current != NULL)
+	{
+		if (current->val == target)
+			return current;
+		current = current->next;
+	}
+	return NULL;
+}
+
+ListNode* appendNode(ListNode* head, ListNode* newNode)
+{
+	ListNode* current = head;
+	while(current->next != NULL)
+		{
+			current = current->next;
+		}
+	current->next = newNode;
+
+	return head;
+}
+
+void insertNode(ListNode* someNode, ListNode* newNode)
+{
+	newNode->next = someNode->next;
+	someNode->next = newNode;
+}
+
+ListNode* deleteNode(ListNode* head, int val)
+{
+	ListNode* current = head;
+	ListNode* previous = NULL;
+	ListNode* newHead = head;
+
+	while(current != NULL)
+	{
+		if (current->val == val)
+		{
+			if (current == head)
+				newHead = newHead->next;
+
+			previous->next = current->next;
+			current->next = NULL;
+			return newHead;
+		}
+
+		else
+		{
+			previous = current;
+			current = current->next;
+		}
+	}
+
+	return newHead;
+}
+
+ListNode* deleteMultipleNode(ListNode* head, int val)
+{
+	ListNode* current = head;
+	ListNode* previous = NULL;
+	ListNode* newHead = head;
+
+	while(current != NULL)
+	{
+		if (current->val == val)
+		{
+			if (current == newHead)
+				newHead = newHead->next;
+
+			previous->next = current->next;
+			current->next = NULL;
+			current = previous->next;
+		}
+
+		else
+		{
+			previous = current;
+			current = current->next;
+		}
+	}
+	return newHead;
+}
+
 int main()
 {
-	int A[] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+	ListNode* Head = new ListNode(0);
 
-	quickSort(A, 0, 9);
+	ListNode* Second = new ListNode(1);
 
-	for (int i = 0; i < 10; i++)
-	{
-		std::cout << A[i] << std::endl;
-	}
+	ListNode* Third = new ListNode(2);
+
+	Head->next = Second;
+
+	Second->next = Third;
+
+	std::cout << searchVal(Head, 2)->val << std::endl;
 
 	return 0;
 }
-
