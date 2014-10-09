@@ -130,12 +130,12 @@ int binarySearchLast(int A[], int start, int end, int target)
 class ListNode {
 public:
       int val;
-      ListNode next;
+      ListNode* next;
       ListNode(int x) {
           val = x;
           next = NULL;
       }
-  }
+  };
 
 ListNode* searchVal(ListNode* head, int target)
 {
@@ -161,10 +161,63 @@ ListNode* appendNode(ListNode* head, ListNode* newNode)
 	return head;
 }
 
-void insertNode(ListNode* someNode, ListNode* newNode)
+ListNode* insertNode(ListNode* head, ListNode* newNode)
 {
-	newNode->next = someNode->next;
-	someNode->next = newNode;
+	if (head == NULL)
+		return newNode;
+
+	if (head->val >= newNode->val)
+	{
+		newNode->next = head;
+		return newNode;
+	}
+
+	else
+	{
+		ListNode* pre = head;
+		ListNode* cur = head->next;
+
+		while(cur != NULL)
+		{
+			if (cur->val >= newNode->val)
+			{
+				newNode->next = cur;
+				pre->next = newNode;
+				return head;
+			}
+
+			pre = cur;
+			cur = cur->next;
+		}
+
+		pre->next = newNode;
+
+		return head;
+	}
+}
+
+ListNode* insertNodewithTwoLevelPointer(ListNode* head, ListNode* newNode)
+{
+	if (head == NULL)
+		return newNode;
+
+	ListNode** p = &head;
+
+	while(*p != NULL)
+	{
+		if ((*p)->val >= newNode->val)
+		{
+			newNode->next = (*p)->next;
+			*p = newNode;
+		}
+
+		*p = (*p)->next;
+	}
+
+	if ((*p)->next == head)
+		return *p;
+	else
+		return head;
 }
 
 ListNode* deleteNode(ListNode* head, int val)
@@ -222,19 +275,116 @@ ListNode* deleteMultipleNode(ListNode* head, int val)
 	return newHead;
 }
 
+ListNode* rotateOnce(ListNode* head)
+    {
+        if (head == NULL)
+            return NULL;
+        if (head->next == NULL)
+            return head;
+
+        ListNode* pre;
+        ListNode* cur = head;
+        ListNode* next = cur->next;
+
+        while(next != NULL)
+        {
+            pre = cur;
+            cur = next;
+            next = next->next;
+        }
+
+        pre->next = NULL;
+        cur->next = head;
+
+        return cur;
+    }
+
+ListNode *rotateRight(ListNode *head, int k) {
+
+        if (head == NULL)
+            return NULL;
+        if (head->next == NULL)
+            return head;
+
+        int length = 0;
+        ListNode* cur = head;
+
+        while (cur != NULL)
+        {
+            cur = cur->next;
+            length++;
+        }
+
+        int rotateTimes = k&length;
+
+        ListNode* newHead = head;
+
+        for (int i = 0; i < rotateTimes; i++)
+        {
+            newHead = rotateOnce(newHead);
+        }
+
+        return newHead;
+
+    }
+
+ListNode *partition(ListNode *head, int x) {
+
+        if (head == NULL)
+            return NULL;
+
+        if (head->next == NULL)
+            return head;
+
+        ListNode dummy = ListNode(0);
+        dummy.next = head;
+
+        ListNode* pre = &dummy;
+        ListNode* cur = head;
+        ListNode* next;
+        ListNode* curSmall = &dummy;
+
+        while (cur != NULL)
+        {
+            next = cur->next;
+
+            if (cur->val < x)
+            {
+                pre->next = cur->next;
+                cur->next = curSmall->next;
+                curSmall->next = cur;
+                curSmall = cur;
+                if (pre == &dummy)
+                    pre = cur;
+            }
+
+            else
+            {
+                pre = cur;
+            }
+
+            cur = next;
+        }
+
+        return dummy.next;
+    }
+
 int main()
 {
-	ListNode* Head = new ListNode(0);
+	ListNode* head = new ListNode(1);
 
-	ListNode* Second = new ListNode(1);
+	ListNode* second = new ListNode(2);
 
-	ListNode* Third = new ListNode(2);
+	ListNode* third = new ListNode(3);
 
-	Head->next = Second;
+	head->next = second;
+	second->next = third;
 
-	Second->next = Third;
+	head = partition(head, 4);
 
-	std::cout << searchVal(Head, 2)->val << std::endl;
+	std::cout << head->val << std::endl
+			<< (head->next)->val <<std::endl
+			<< ((head->next)->next)->val<<std::endl;
 
 	return 0;
 }
