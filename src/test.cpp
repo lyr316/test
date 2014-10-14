@@ -369,22 +369,102 @@ ListNode *partition(ListNode *head, int x) {
         return dummy.next;
     }
 
+//struct RandomListNode {
+//      int label;
+//      RandomListNode *next, *random;
+//      RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
+//  };
+//
+//RandomListNode *copyRandomList(RandomListNode *head) {
+//
+//        RandomListNode* cur_node=head;
+//        RandomListNode* new_head=NULL;
+//        RandomListNode* new_tail=NULL;
+//
+//        while (cur_node!=NULL)
+//        {
+//            RandomListNode* next_node=cur_node->next;
+//
+//            RandomListNode* new_node= new RandomListNode(cur_node->label);
+//
+//            cur_node->next=new_node;
+//            new_node->random=cur_node;
+//
+//            if (new_head==NULL)
+//            {
+//                new_head=new_node;
+//                new_tail=new_node;
+//            }
+//            else
+//            {
+//                new_tail->next=new_node;
+//                new_tail=new_node;
+//            }
+//
+//            cur_node=next_node;
+//        }
+//
+//        cur_node=new_head;
+//
+//        vector<RandomListNode*> originals;
+//
+//        while (cur_node!=NULL)
+//        {
+//            RandomListNode* original_node=cur_node->random;
+//
+//			if (original_node->random==NULL)
+//				cur_node->random=NULL;
+//			else
+//                cur_node->random=original_node->random->next;
+//
+//			originals.push_back(original_node);
+//
+//			cur_node=cur_node->next;
+//        }
+//
+//        for (int i=0;i<originals.size();i++)
+//        {
+//            if (i!=originals.size()-1)
+//                originals[i]->next=originals[i+1];
+//            else
+//                originals[i]->next=NULL;
+//        }
+//        return new_head;
+//
+//    }
+
 int main()
 {
-	ListNode* head = new ListNode(1);
+//	ListNode* head = new ListNode(1);
+//
+//	ListNode* second = new ListNode(2);
+//
+//	ListNode* third = new ListNode(3);
+//
+//	head->next = second;
+//	second->next = third;
+//
+//	head = partition(head, 4);
+//
+//	std::cout << head->val << std::endl
+//			<< (head->next)->val <<std::endl
+//			<< ((head->next)->next)->val<<std::endl;
 
-	ListNode* second = new ListNode(2);
+	RentalCarSystem r(100);
 
-	ListNode* third = new ListNode(3);
+	Date start = Date (2014, 10, 10);
 
-	head->next = second;
-	second->next = third;
+	Date end = Date (2014, 10, 11);
 
-	head = partition(head, 4);
+	std::cout << r.inquiryAvailability(0, start, end) << std::endl;
 
-	std::cout << head->val << std::endl
-			<< (head->next)->val <<std::endl
-			<< ((head->next)->next)->val<<std::endl;
+	std::cout << r.placeOrder(0, start, end) << std::endl;
+
+	std::cout << r.inquiryAvailability(0, start, end) << std::endl;
+
+	std::cout << r.cancelOrder(0) << std::endl;
+
+	std::cout << r.inquiryAvailability(0, start, end) << std::endl;
 
 	return 0;
 }
