@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <queue>
 #include "test.h"
 
 class ListNode {
@@ -27,6 +28,24 @@ public:
       TreeNode *right;
       TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
+
+void printTree(TreeNode* root)
+{
+	if (root == NULL)
+		return;
+
+	std::queue<TreeNode*> q;
+	q.push(root);
+	while (!q.empty())
+	{
+		q.push(q.front()->left);
+		q.push(q.front()->right);
+		std::cout << q.front()->val << ' ';
+		q.pop();
+	}
+
+	return;
+}
 
 int main()
 {
