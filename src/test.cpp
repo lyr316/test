@@ -51,7 +51,5 @@ int main()
 {
 	std::stack<TreeNode*> s;
 
-	std::cout << "Import project on github to eclipse on Ubuntu." << std::endl;
-
 	return 0;
 }
